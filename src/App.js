@@ -6,8 +6,6 @@ import {Connections} from "./components/Connections";
 class App extends Component {
 
 
-
-
     render() {
         return (
             <div className="App">

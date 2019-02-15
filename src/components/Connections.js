@@ -1,13 +1,19 @@
 import React, {Component} from 'react';
 import {UsernameForm} from "./UsernameForm";
-import {NodesGraph} from "./NodesGraph";
+import {D3Graph} from "./D3Graph";
 
 
 export class Connections extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {username: '', resultMessage: "", connections: []};
+        this.state = {
+            username: '', resultMessage: "", connections: [], user: {},
+            data: {
+                nodes: [],
+                links: []
+            }
+        };
         this.onSubmitUsername = this.onSubmitUsername.bind(this);
         this.onFindClicked = this.onFindClicked.bind(this);
     }
@@ -21,20 +27,59 @@ export class Connections extends Component {
 
             let context = this
 
-            fetch("https://torre.bio/api/people/" + this.state.username + "/connections")
+            fetch("https://torre.bio/api/bios/" + this.state.username)
 
                 .then((response) => response.json())
-                .then((responseJson) => {
-                    if (responseJson.message) {
-                        context.setState({resultMessage: responseJson.message});
+                .then((user) => {
+                    if (user.message) {
+                        context.setState({resultMessage: user.message});
                     } else {
-                        context.setState({connections: responseJson});
+                        context.setState({user: user});
+
+                        context.state.data.nodes.push({
+                            id: user.person.id,
+                            label: user.person.name
+                        });
+
+
+                        fetch("https://torre.bio/api/people/" + this.state.username + "/connections")
+
+                            .then((response) => response.json())
+                            .then((responseJson) => {
+                                if (responseJson.message) {
+                                    context.setState({resultMessage: responseJson.message});
+                                } else {
+                                    context.setState({connections: responseJson});
+                                }
+                                console.log("responseJson", responseJson);
+
+                                this.state.connections.forEach(function (connection) {
+                                    context.state.data.nodes.push({
+                                        id: connection.person.id,
+                                        label: connection.person.name
+                                    });
+                                    context.state.data.links.push({
+                                        source: context.state.user.person.id,
+                                        target: connection.person.id
+                                    })
+                                });
+
+
+                            })
+                            .catch((error) => {
+                                console.error(error);
+                            });
+
+
                     }
-                    console.log(responseJson);
+
+
                 })
                 .catch((error) => {
                     console.error(error);
                 });
+
+
         }
     }
 
@@ -49,8 +94,9 @@ export class Connections extends Component {
 
         let nodes;
 
-        if (this.state.connections.length > 0) {
-            nodes = <NodesGraph username={this.state.username} connections={this.state.connections}/>
+        if (this.state.data.links.length > 0) {
+
+            nodes = <D3Graph data={this.state.data}/>
         }
 
 

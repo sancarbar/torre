@@ -9,13 +9,13 @@ export class NodesGraph extends Component {
 
         nodes = this.props.connections.map((connection, index) =>
             [<ForceGraphNode key={index} node={{id: index + '-node', label: connection.person.name}} fill="blue"/>,
-            <ForceGraphLink link={{ source: index + '-node' , target: 'user-node' }} />]
+                <ForceGraphLink link={{source: index + '-node', target: 'user-node'}}/>]
         );
 
 
         return (
             <InteractiveForceGraph
-                simulationOptions={{height: 1000, width: 1000}}
+                simulationOptions={{height: 2000, width: 2000}}
                 labelAttr="label"
                 onSelectNode={(node) => console.log(node)}
                 highlightDependencies>
