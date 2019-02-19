@@ -8,7 +8,7 @@ export class Connections extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: '', resultMessage: "", connections: [], user: {},
+            username: '', resultMessage: "", user: {},
             data: {
                 nodes: [],
                 links: []
@@ -36,34 +36,42 @@ export class Connections extends Component {
                     } else {
                         context.setState({user: user});
 
-                        context.state.data.nodes.push({
-                            id: user.person.id,
-                            label: user.person.name
-                        });
+                        let data = {
+                            "nodes": [{
+                                id: user.person.name.toUpperCase(),
+                                svg: user.person.picture
+                            }],
+                            "links": []
+                        };
+
+                        context.setState({resultMessage: "finding connections for " + user.person.name + " ..."});
 
 
                         fetch("https://torre.bio/api/people/" + this.state.username + "/connections")
 
                             .then((response) => response.json())
                             .then((responseJson) => {
+                                console.log("responseJson:  ", responseJson);
                                 if (responseJson.message) {
                                     context.setState({resultMessage: responseJson.message});
                                 } else {
-                                    context.setState({connections: responseJson});
-                                }
-                                console.log("responseJson", responseJson);
-
-                                this.state.connections.forEach(function (connection) {
-                                    context.state.data.nodes.push({
-                                        id: connection.person.id,
-                                        label: connection.person.name
+                                    responseJson.forEach(function (connection) {
+                                        if (connection.degrees === 1) {
+                                            data.nodes.push({
+                                                id: connection.person.name.toUpperCase(),
+                                                svg: connection.person.picture,
+                                                info: connection.person.professionalHeadline
+                                            });
+                                            data.links.push({
+                                                source: context.state.user.person.name.toUpperCase(),
+                                                target: connection.person.name.toUpperCase()
+                                            })
+                                        }
                                     });
-                                    context.state.data.links.push({
-                                        source: context.state.user.person.id,
-                                        target: connection.person.id
-                                    })
-                                });
 
+                                    context.setState({data: data});
+
+                                }
 
                             })
                             .catch((error) => {
@@ -105,6 +113,7 @@ export class Connections extends Component {
                 <UsernameForm onSubmitUsername={this.onSubmitUsername}/>
                 <p>Connections for <b>{this.state.username}:</b></p>
                 {button}
+                <br/>
                 <br/>
                 {this.state.resultMessage}
 

@@ -4,55 +4,44 @@ import React, {Component} from 'react';
 
 export class D3Graph extends Component {
 
-
-// graph payload (with minimalist structure)
-
-    data = {
-        nodes: [{id: 'Harry'}, {id: 'Sally'}, {id: 'Alice'}],
-        links: [{source: 'Harry', target: 'Sally'}, {source: 'Harry', target: 'Alice'}]
-    };
-
-// the graph configuration, you only need to pass down properties
-// that you want to override, otherwise default ones will be used
+    constructor(props) {
+        super(props);
+        this.onClickNode = this.onClickNode.bind(this)
+    }
 
     myConfig = {
         nodeHighlightBehavior: true,
+        width: 600,
+        height: 400,
+        focusZoom: 5,
         node: {
-            color: 'lightgreen',
-            size: 120,
-            highlightStrokeColor: 'blue'
+            color: 'orange',
+            size: 200,
+            highlightStrokeColor: 'red',
+            renderLabel: true,
         },
         link: {
-            highlightColor: 'lightblue'
+            highlightColor: 'red'
         }
     };
 
 // graph event callbacks
 
-    onClickGraph = function () {
-        window.alert(`Clicked the graph background`);
-    };
-
 
     onClickNode = function (nodeId) {
-        window.alert(`Clicked node ${nodeId}`);
-    };
 
-
-    onRightClickNode = function (event, nodeId) {
-        window.alert(`Right clicked node ${nodeId}`);
+        this.props.data.nodes.forEach(function (connection) {
+            if (connection.id === nodeId) {
+                window.alert(`${nodeId} \n \n ${connection.info}`);
+                return
+            }
+        });
     };
 
 
     onClickLink = function (source, target) {
         window.alert(`Clicked link between ${source} and ${target}`);
     };
-
-
-    onRightClickLink = function (event, source, target) {
-        window.alert(`Right clicked link between ${source} and ${target}`);
-    };
-
 
 
     render() {
@@ -62,10 +51,7 @@ export class D3Graph extends Component {
                 data={this.props.data}
                 config={this.myConfig}
                 onClickNode={this.onClickNode}
-                onRightClickNode={this.onRightClickNode}
-                onClickGraph={this.onClickGraph}
                 onClickLink={this.onClickLink}
-                onRightClickLink={this.onRightClickLink}
             />
         )
     }
