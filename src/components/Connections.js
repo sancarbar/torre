@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {UsernameForm} from "./UsernameForm";
 import {D3Graph} from "./D3Graph";
-
+import Button from '@material-ui/core/Button';
 
 export class Connections extends Component {
 
@@ -25,14 +25,14 @@ export class Connections extends Component {
     onFindClicked() {
         if (this.state.username.length > 3) {
 
-            let context = this
+            let context = this;
+
 
             fetch("https://torre.bio/api/bios/" + this.state.username)
 
                 .then((response) => response.json())
                 .then((user) => {
-                    if (user.message) {
-                        context.setState({resultMessage: user.message});
+                    if (user.message) {                         context.setState({resultMessage: user.message});
                     } else {
                         context.setState({user: user});
 
@@ -46,27 +46,26 @@ export class Connections extends Component {
 
                         context.setState({resultMessage: "finding connections for " + user.person.name + " ..."});
 
-
                         fetch("https://torre.bio/api/people/" + this.state.username + "/connections")
 
                             .then((response) => response.json())
                             .then((responseJson) => {
-                                console.log("responseJson:  ", responseJson);
+
                                 if (responseJson.message) {
                                     context.setState({resultMessage: responseJson.message});
                                 } else {
                                     responseJson.forEach(function (connection) {
-                                        if (connection.degrees === 1) {
-                                            data.nodes.push({
-                                                id: connection.person.name.toUpperCase(),
-                                                svg: connection.person.picture,
-                                                info: connection.person.professionalHeadline
-                                            });
-                                            data.links.push({
-                                                source: context.state.user.person.name.toUpperCase(),
-                                                target: connection.person.name.toUpperCase()
-                                            })
-                                        }
+
+                                        data.nodes.push({
+                                            id: connection.person.name.toUpperCase(),
+                                            svg: connection.person.picture,
+                                            info: connection.person.professionalHeadline
+                                        });
+                                        data.links.push({
+                                            source: context.state.user.person.name.toUpperCase(),
+                                            target: connection.person.name.toUpperCase()
+                                        })
+
                                     });
 
                                     context.setState({data: data});
@@ -97,7 +96,9 @@ export class Connections extends Component {
         let button;
 
         if (this.state.username.length > 3) {
-            button = <button onClick={this.onFindClicked}>Find</button>
+            button = <Button variant="contained" color="primary" onClick={this.onFindClicked}>
+                        FIND
+                     </Button>
         }
 
         let nodes;

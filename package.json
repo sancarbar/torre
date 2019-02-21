@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.9.2",
     "d3": "^5.9.1",
     "d3-force": "^2.0.0",
     "react": "^16.8.1",
@@ -15,7 +16,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "buildeploy": "npm run build && /usr/local/Cellar/node/9.7.1/bin/firebase deploy"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -11,12 +11,12 @@ export class D3Graph extends Component {
 
     myConfig = {
         nodeHighlightBehavior: true,
-        width: 600,
-        height: 400,
+        width: 1800,
+        height: 600,
         focusZoom: 5,
         node: {
             color: 'orange',
-            size: 200,
+            size: 120,
             highlightStrokeColor: 'red',
             renderLabel: true,
         },
