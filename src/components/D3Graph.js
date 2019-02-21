@@ -23,13 +23,14 @@ export class D3Graph extends Component {
     }
 
     myConfig = {
-        nodeHighlightBehavior: true,
-        width: 1800,
+        width: 800,
         height: 600,
-        focusZoom: 5,
+        directed: true,
+        focusZoom: 1,
+        automaticRearrangeAfterDropNode: true,
         node: {
             color: 'orange',
-            size: 120,
+            size: 200,
             highlightStrokeColor: 'red',
             renderLabel: true,
         },

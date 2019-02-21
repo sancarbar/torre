@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {UsernameForm} from "./UsernameForm";
 import {D3Graph} from "./D3Graph";
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export class Connections extends Component {
 
@@ -11,6 +12,7 @@ export class Connections extends Component {
             username: '',
             connectionDegrees: 1,
             resultMessage: "",
+            inProgress: false,
             user: {},
             data: {
                 nodes: [],
@@ -52,7 +54,11 @@ export class Connections extends Component {
                             "links": []
                         };
 
-                        context.setState({resultMessage: `finding connections at ${context.state.connectionDegrees} degrees for ${user.person.name} ...`});
+                        context.setState({
+                            resultMessage: `finding connections at ${context.state.connectionDegrees} degrees for ${user.person.name}   `,
+                            inProgress: true
+                        });
+
 
                         fetch("https://torre.bio/api/people/" + this.state.username + "/connections")
 
@@ -77,8 +83,7 @@ export class Connections extends Component {
                                         }
                                     });
 
-                                    context.setState({data: data});
-
+                                    context.setState({data: data, inProgress: false});
                                 }
 
                             })
@@ -102,35 +107,24 @@ export class Connections extends Component {
 
     render() {
 
-        let button;
-
-        if (this.state.username.length > 3) {
-            button = <Button variant="contained" color="primary" onClick={this.onFindClicked}>
-                FIND
-            </Button>
-        }
-
-        let nodes;
-
-        if (this.state.data.links.length > 0) {
-
-            nodes = <D3Graph data={this.state.data}/>
-        }
-
-
         return (
             <div>
                 <UsernameForm onUsernameTyped={this.onUsernameTyped} onDegreesSelected={this.onDegreesSelected}/>
                 <p>Connections for <b>{this.state.username}:</b></p>
-                {button}
+
+                {this.state.username.length > 3 ?
+                    <Button variant="contained" color="primary" onClick={this.onFindClicked}>FIND</Button> : null}
+
                 <br/>
                 <br/>
+
                 {this.state.resultMessage}
+                {this.state.inProgress ? <CircularProgress disableShrink/> : null}
 
                 <br/>
                 <br/>
 
-                {nodes}
+                {this.state.data.links.length > 0 ? <D3Graph data={this.state.data}/> : null}
 
             </div>
         );
