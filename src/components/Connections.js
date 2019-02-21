@@ -34,7 +34,6 @@ export class Connections extends Component {
         if (this.state.username.length > 3) {
 
             let context = this;
-            console.log("connectionDegrees onFindClicked", context.state.connectionDegrees)
 
             fetch("https://torre.bio/api/bios/" + this.state.username)
 
