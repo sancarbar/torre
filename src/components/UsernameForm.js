@@ -21,7 +21,9 @@ export class UsernameForm extends Component {
     }
 
     handleSelectChange(event) {
-        this.props.onDegreesSelected(event.target.value)
+        let degrees = event.target.value;
+        this.setState({connectionDegrees: degrees});
+        this.props.onDegreesSelected(degrees);
     }
 
 
