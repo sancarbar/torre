@@ -8,7 +8,10 @@ export class Connections extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: '', resultMessage: "", user: {},
+            username: '',
+            connectionDegrees: 1,
+            resultMessage: "",
+            user: {},
             data: {
                 nodes: [],
                 links: []
@@ -18,8 +21,8 @@ export class Connections extends Component {
         this.onFindClicked = this.onFindClicked.bind(this);
     }
 
-    onSubmitUsername(username) {
-        this.setState({username: username});
+    onSubmitUsername(username, connectionDegree) {
+        this.setState({username: username, connectionDegree: connectionDegree});
     }
 
     onFindClicked() {
@@ -32,7 +35,8 @@ export class Connections extends Component {
 
                 .then((response) => response.json())
                 .then((user) => {
-                    if (user.message) {                         context.setState({resultMessage: user.message});
+                    if (user.message) {
+                        context.setState({resultMessage: user.message});
                     } else {
                         context.setState({user: user});
 
@@ -44,7 +48,7 @@ export class Connections extends Component {
                             "links": []
                         };
 
-                        context.setState({resultMessage: "finding connections for " + user.person.name + " ..."});
+                        context.setState({resultMessage: `finding connections at ${this.state.connectionDegrees} degrees for ${user.person.name} ...`});
 
                         fetch("https://torre.bio/api/people/" + this.state.username + "/connections")
 
@@ -56,16 +60,17 @@ export class Connections extends Component {
                                 } else {
                                     responseJson.forEach(function (connection) {
 
-                                        data.nodes.push({
-                                            id: connection.person.name.toUpperCase(),
-                                            svg: connection.person.picture,
-                                            info: connection.person.professionalHeadline
-                                        });
-                                        data.links.push({
-                                            source: context.state.user.person.name.toUpperCase(),
-                                            target: connection.person.name.toUpperCase()
-                                        })
-
+                                        if (connection.degrees <= context.state.connectionDegrees) {
+                                            data.nodes.push({
+                                                id: connection.person.name.toUpperCase(),
+                                                svg: connection.person.picture,
+                                                info: connection.person.professionalHeadline
+                                            });
+                                            data.links.push({
+                                                source: context.state.user.person.name.toUpperCase(),
+                                                target: connection.person.name.toUpperCase()
+                                            })
+                                        }
                                     });
 
                                     context.setState({data: data});
@@ -97,8 +102,8 @@ export class Connections extends Component {
 
         if (this.state.username.length > 3) {
             button = <Button variant="contained" color="primary" onClick={this.onFindClicked}>
-                        FIND
-                     </Button>
+                FIND
+            </Button>
         }
 
         let nodes;

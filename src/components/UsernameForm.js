@@ -13,15 +13,15 @@ export class UsernameForm extends Component {
         super(props);
         this.handleChange = this.handleChange.bind(this);
         this.handleSelectChange = this.handleSelectChange.bind(this);
-        this.state = {connectionDegree: '1'}
+        this.state = {connectionDegrees: 1}
     }
 
     handleChange(event) {
-        this.props.onSubmitUsername(event.target.value)
+        this.props.onSubmitUsername(event.target.value, this.state.connectionDegrees)
     }
 
     handleSelectChange(event) {
-        this.setState({connectionDegree: event.target.value})
+        this.setState({connectionDegrees: parseInt(event.target.value)})
     }
 
 
@@ -36,25 +36,25 @@ export class UsernameForm extends Component {
                 <br/>
                 <br/>
 
-                    <TextField
-                        id="outlined-name"
-                        label="username"
-                        onChange={this.handleChange}
-                        margin="normal"
-                        variant="outlined"
-                    />
+                <TextField
+                    id="outlined-name"
+                    label="username"
+                    onChange={this.handleChange}
+                    margin="normal"
+                    variant="outlined"
+                />
                 <br/>
                 <br/>
-                <InputLabel className="input-label">Connection Degree</InputLabel>
-                    <Select
-                        value={this.state.connectionDegree}
-                        onChange={this.handleSelectChange}
-                        name="name">
-                        <MenuItem value="1">1</MenuItem>
-                        <MenuItem value="2">2</MenuItem>
-                        <MenuItem value="3">3</MenuItem>
-                    </Select>
-                    <br/>
+                <InputLabel className="input-label">Connection Degrees </InputLabel>
+                <Select
+                    value={this.state.connectionDegrees}
+                    onChange={this.handleSelectChange}
+                    name="name">
+                    <MenuItem value="1">1</MenuItem>
+                    <MenuItem value="2">2</MenuItem>
+                    <MenuItem value="3">3</MenuItem>
+                </Select>
+                <br/>
 
                 <br/>
             </div>
