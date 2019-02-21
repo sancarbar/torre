@@ -17,19 +17,24 @@ export class Connections extends Component {
                 links: []
             }
         };
-        this.onSubmitUsername = this.onSubmitUsername.bind(this);
+        this.onUsernameTyped = this.onUsernameTyped.bind(this);
+        this.onDegreesSelected = this.onDegreesSelected.bind(this);
         this.onFindClicked = this.onFindClicked.bind(this);
     }
 
-    onSubmitUsername(username, connectionDegree) {
-        this.setState({username: username, connectionDegree: connectionDegree});
+    onUsernameTyped(username) {
+        this.setState({username: username});
+    }
+
+    onDegreesSelected(degrees) {
+        this.setState({connectionDegrees: degrees});
     }
 
     onFindClicked() {
         if (this.state.username.length > 3) {
 
             let context = this;
-
+            console.log("connectionDegrees onFindClicked", context.state.connectionDegrees)
 
             fetch("https://torre.bio/api/bios/" + this.state.username)
 
@@ -48,7 +53,7 @@ export class Connections extends Component {
                             "links": []
                         };
 
-                        context.setState({resultMessage: `finding connections at ${this.state.connectionDegrees} degrees for ${user.person.name} ...`});
+                        context.setState({resultMessage: `finding connections at ${context.state.connectionDegrees} degrees for ${user.person.name} ...`});
 
                         fetch("https://torre.bio/api/people/" + this.state.username + "/connections")
 
@@ -116,7 +121,7 @@ export class Connections extends Component {
 
         return (
             <div>
-                <UsernameForm onSubmitUsername={this.onSubmitUsername}/>
+                <UsernameForm onUsernameTyped={this.onUsernameTyped} onDegreesSelected={this.onDegreesSelected}/>
                 <p>Connections for <b>{this.state.username}:</b></p>
                 {button}
                 <br/>

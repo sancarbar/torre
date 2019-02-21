@@ -17,11 +17,11 @@ export class UsernameForm extends Component {
     }
 
     handleChange(event) {
-        this.props.onSubmitUsername(event.target.value, this.state.connectionDegrees)
+        this.props.onUsernameTyped(event.target.value)
     }
 
     handleSelectChange(event) {
-        this.setState({connectionDegrees: parseInt(event.target.value)})
+        this.props.onDegreesSelected(event.target.value)
     }
 
 
